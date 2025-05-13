@@ -11,8 +11,11 @@ func main() {
 	if success !=""{
 		fmt.Println(success)
 	}
-
-	capacities := lem.PutAnts(lem.Graph(colony), colony.NumAnts)
+	allgroup:=lem.Grouping(colony)
+	bestGroup:=lem.Fined(allgroup)
+	fmt.Println(bestGroup)
+	capacities := lem.PutAnts(bestGroup, colony.NumAnts)
+	
 	count := 0
 	for _, x := range capacities {
 		if x == 0 {

@@ -1,8 +1,8 @@
 package lem
 
 type Room struct {
-	name    string
-	x, y    string
+	name string
+	x, y string
 }
 type Colony struct {
 	NumAnts int
@@ -10,4 +10,7 @@ type Colony struct {
 	links   map[string][]string
 	start   *Room
 	end     *Room
+}
+type Paths struct {
+	Path [][]string
 }
