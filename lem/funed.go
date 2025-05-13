@@ -2,6 +2,7 @@ package lem
 
 import (
 	"fmt"
+	"math"
 	"sort"
 )
 
@@ -12,7 +13,6 @@ func Graph(colony *Colony) [][]string {
 	}
 	forbidden := []string{colony.start.name, colony.end.name}
 	allpath := [][]string{}
-
 	for _, linkstart := range colony.links[colony.start.name] {
 		if linkstart == colony.start.name || linkstart == colony.end.name {
 			if linkstart == colony.end.name {
@@ -28,7 +28,6 @@ func Graph(colony *Colony) [][]string {
 			path := []string{colony.start.name}
 			path = append(path, bfs(linkstart, linkend, colony, forbidden)...)
 			path = append(path, colony.end.name)
-
 			allpath = append(allpath, path)
 		}
 	}
@@ -69,6 +68,9 @@ func bfs(start, end string, colony *Colony, forbidden []string) []string {
 }
 
 func notval(b []string, groups [][]string) bool {
+	if len(b) == 2{
+		return false
+	}
 	set := make(map[string]bool)
 	for _, a := range groups {
 		for r, val := range a {
@@ -107,12 +109,35 @@ func Grouping(colony *Colony) []Paths {
 	return allGroups
 }
 
-func Fined(all []Paths) [][]string {
-	bestGroup := [][]string{}
-	for _, i := range all {
-		if len(i.Path) > len(bestGroup) {
-			bestGroup = i.Path
+// func Fined(all []Paths) [][]string {
+// 	bestGroup := [][]string{}
+// 	for _, i := range all {
+// 		if len(i.Path) > len(bestGroup) {
+// 			bestGroup = i.Path
+// 		}
+// 	}
+// 	return bestGroup
+// }
+
+func Found(all []Paths,  NumberOfAnts int) [][]string{
+	BestTurn := math.MaxInt64
+	BestGroup := map[int][][]string{}
+	for i := 0; i < len(all); i++{
+		group := all[i].Path
+		GroupCapacity := PutAnts(group, NumberOfAnts)
+		BigTurn := 0
+		for j, x := range group{
+			s := len(x) + GroupCapacity[j]-1
+			if s > BigTurn{
+				BigTurn = s
+			}
 		}
-	}
-	return bestGroup
+		BestGroup[BigTurn] = group
+		if BigTurn < BestTurn{
+			BestTurn = BigTurn
+		}
+	} 
+
+	return BestGroup[BestTurn]
+
 }

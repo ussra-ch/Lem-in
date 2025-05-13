@@ -8,12 +8,13 @@ import (
 
 func main() {
 	colony, success := lem.Parsing()
-	if success !=""{
-		fmt.Println(success)
+	if success == ""{
+		return
 	}
 	allgroup:=lem.Grouping(colony)
-	bestGroup:=lem.Fined(allgroup)
-	fmt.Println(bestGroup)
+	// fmt.Println(allgroup)
+	bestGroup:=lem.Found(allgroup, colony.NumAnts)
+	// fmt.Println(bestGroup)
 	capacities := lem.PutAnts(bestGroup, colony.NumAnts)
 	
 	count := 0
@@ -31,7 +32,7 @@ func main() {
 	antNumber := 1
 	assigned := make([]int, len(capacities))
 	for antNumber <= totalAnts {
-		for i := 0; i < len(capacities) && antNumber <= totalAnts; i++ {
+		for i := 0; i < len(capacities); i++ {
 			if assigned[i] < capacities[i] {
 				result[i] = append(result[i], fmt.Sprintf("L%d", antNumber))
 				assigned[i]++
@@ -39,5 +40,14 @@ func main() {
 			}
 		}
 	}
-	lem.PrintAnts(result, lem.Graph(colony))
+
+	// for i := 0; i < len(bestGroup); i++{
+	// 	if capacities[i] > 0 && antNumber<totalAnts{
+	// 		fmt.Printf("L%d", antNumber)
+	// 		capacities[i] --
+	// 		antNumber++
+	// 		totalAnts--
+	// 	}
+	// }
+	lem.PrintAnts(result, bestGroup)
 }
