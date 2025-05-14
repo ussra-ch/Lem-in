@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"lem/lem"
+	"lem/outils"
 )
 
 func main() {
@@ -11,11 +11,11 @@ func main() {
 	if success == ""{
 		return
 	}
-	allgroup:=lem.Grouping(colony)
+	allgroup:=lem.PathsGrouping(colony)
 	// fmt.Println(allgroup)
-	bestGroup:=lem.Found(allgroup, colony.NumAnts)
+	bestGroup:=lem.ChooseAGroup(allgroup, colony.NumAnts)
 	// fmt.Println(bestGroup)
-	capacities := lem.PutAnts(bestGroup, colony.NumAnts)
+	capacities := lem.PathsCapacity(bestGroup, colony.NumAnts)
 	
 	count := 0
 	for _, x := range capacities {
@@ -40,14 +40,5 @@ func main() {
 			}
 		}
 	}
-
-	// for i := 0; i < len(bestGroup); i++{
-	// 	if capacities[i] > 0 && antNumber<totalAnts{
-	// 		fmt.Printf("L%d", antNumber)
-	// 		capacities[i] --
-	// 		antNumber++
-	// 		totalAnts--
-	// 	}
-	// }
 	lem.PrintAnts(result, bestGroup)
 }
