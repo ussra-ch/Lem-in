@@ -109,16 +109,6 @@ func Grouping(colony *Colony) []Paths {
 	return allGroups
 }
 
-// func Fined(all []Paths) [][]string {
-// 	bestGroup := [][]string{}
-// 	for _, i := range all {
-// 		if len(i.Path) > len(bestGroup) {
-// 			bestGroup = i.Path
-// 		}
-// 	}
-// 	return bestGroup
-// }
-
 func Found(all []Paths,  NumberOfAnts int) [][]string{
 	BestTurn := math.MaxInt64
 	BestGroup := map[int][][]string{}

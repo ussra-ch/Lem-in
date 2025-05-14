@@ -28,8 +28,18 @@ func Parsing() (*Colony, string) {
 
 	lines := strings.Split(string(file), "\n")
 
-	ant, err := strconv.Atoi(strings.TrimSpace(lines[0]))
-	if err != nil || ant <= 0 {
+	AntIndex := 0
+	for i, x := range lines{
+		if x[0] == '#'{
+			continue
+		}else{
+			AntIndex = i
+			break
+		}
+	}
+
+	ant, err := strconv.Atoi(strings.TrimSpace(lines[AntIndex]))
+	if err != nil || ant <= 0 || ant > 10000000{
 		fmt.Println("Error: Invalid ant number")
 		return nil, ""
 	}
@@ -38,24 +48,37 @@ func Parsing() (*Colony, string) {
 	for r := 1; r < len(lines); r++ {
 		line := strings.TrimSpace(lines[r])
 
-		if line == "" {
+		if line == "" || line[0] == 'L'{
+			continue
+		}
+		if line[0] == '#' && line != "##start" && line != "##end"{
 			continue
 		}
 
 		room := strings.Fields(line)
 		if len(room) == 3 {
-			if room[0][0] == 'L' {
-				fmt.Println("Error: Room name cannot start with 'L'.")
-				return nil, ""
-			}
-
 			if _, exists := colony.rooms[room[0]]; exists {
 				fmt.Println("Error: Duplicate room name found:", room[0])
 				return nil, ""
 			}
 
+			if room[1] == "" || room[2] == ""{
+				fmt.Println("The coordinates of the rooms should be not empty")
+				return nil, ""
+			}
+
+			RoomX, err := strconv.Atoi(room[1])
+			if err != nil{
+				fmt.Println("The coordinates of the rooms must always be int")
+				return nil, ""
+			}
+			RoomY, err := strconv.Atoi(room[2])
+			if err != nil{
+				fmt.Println("The coordinates of the rooms must always be int")
+				return nil, ""
+			}
 			for _, existingRoom := range colony.rooms {
-				if room[1] == existingRoom.x && room[2] == existingRoom.y {
+				if  RoomX == existingRoom.x && RoomY == existingRoom.y {
 					fmt.Println("Error: Duplicate room coordinates found:", room[1], room[2])
 					return nil, ""
 				}
@@ -63,13 +86,11 @@ func Parsing() (*Colony, string) {
 
 			colony.rooms[room[0]] = &Room{
 				name: room[0],
-				x:    room[1],
-				y:    room[2],
+				x:    RoomX,
+				y:    RoomY,
 			}
 			continue
-		}
-
-		if line == "##start" {
+		}else if line == "##start" {
 			if r+1 >= len(lines) {
 				fmt.Println("Error: Missing start room data.")
 				return nil, ""
@@ -79,16 +100,28 @@ func Parsing() (*Colony, string) {
 				fmt.Println("Error: Invalid start room format.")
 				return nil, ""
 			}
+			if startRoom[1] == "" || startRoom[2] == ""{
+				fmt.Println("The coordinates of the rooms should be not empty")
+				return nil, ""
+			}
+			RoomX, err := strconv.Atoi(startRoom[1])
+				if err != nil{
+					fmt.Println("The coordinates of the rooms must always be int")
+					return nil, ""
+				}
+			RoomY, err := strconv.Atoi(startRoom[2])
+				if err != nil{
+					fmt.Println("The coordinates of the rooms must always be int")
+					return nil, ""
+				}
 			colony.start = &Room{
 				name: startRoom[0],
-				x:    startRoom[1],
-				y:    startRoom[2],
+				x:    RoomX,
+				y:   RoomY,
 			}
 			r++
 			continue
-		}
-
-		if line == "##end" {
+		}else if line == "##end" {
 			if r+1 >= len(lines) {
 				fmt.Println("Error: Missing end room data.")
 				return nil, ""
@@ -98,20 +131,38 @@ func Parsing() (*Colony, string) {
 				fmt.Println("Error: Invalid end room format.")
 				return nil, ""
 			}
+			if endRoom[1] == "" || endRoom[2] == ""{
+				fmt.Println("The coordinates of the rooms should be not empty")
+				return nil, ""
+			}
+			RoomX, err := strconv.Atoi(endRoom[1])
+				if err != nil{
+					fmt.Println("The coordinates of the rooms must always be int")
+					return nil, ""
+				}
+			RoomY, err := strconv.Atoi(endRoom[2])
+				if err != nil{
+					fmt.Println("The coordinates of the rooms must always be int")
+					return nil, ""
+				}
 			colony.end = &Room{
 				name: endRoom[0],
-				x:    endRoom[1],
-				y:    endRoom[2],
+				x:   RoomX,
+				y:    RoomY,
 			}
 			r++
 			continue
+		}else{
+			link := strings.Split(line, "-")
+			if len(link) == 2 {
+				colony.links[link[0]] = append(colony.links[link[0]], link[1])
+				colony.links[link[1]] = append(colony.links[link[1]], link[0])
+			}else{
+				fmt.Println("The coordinates of the rooms should be not empty")
+				return nil, ""
+			}
 		}
 
-		link := strings.Split(line, "-")
-		if len(link) == 2 {
-			colony.links[link[0]] = append(colony.links[link[0]], link[1])
-			colony.links[link[1]] = append(colony.links[link[1]], link[0])
-		}
 	}
 
 	if colony.start == nil {

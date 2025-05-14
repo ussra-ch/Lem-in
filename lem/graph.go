@@ -2,7 +2,7 @@ package lem
 
 type Room struct {
 	name string
-	x, y string
+	x, y int
 }
 type Colony struct {
 	NumAnts int
