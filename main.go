@@ -24,7 +24,7 @@ func main() {
 		}
 	}
 	if count == len(capacities) {
-		fmt.Println("No available paths")
+		fmt.Println("Invalid input")
 		return
 	}
 	result := make([][]string, len(capacities))
