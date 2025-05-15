@@ -6,9 +6,7 @@ import (
 
 /* This function checks the presence of a slice in a matrix */
 func IsValidPath(b []string, groups [][]string) bool {
-	if len(b) == 2{
-		return false
-	}
+	//3lach kan7tajo hadi
 	set := make(map[string]bool)
 	for _, a := range groups {
 		for r, val := range a {
@@ -25,54 +23,47 @@ func IsValidPath(b []string, groups [][]string) bool {
 	return true
 }
 
-
 /* This function groups the paths by non-crossing path */
-func PathsGrouping(colony *Colony) []Paths {
-	allpath := Graph(colony)
+func GroupingPaths(colony *Colony) []Paths {
+	allpath := GetAllPathsSorted(colony)
 	allGroups := []Paths{}
-
-	for _, pathA := range allpath {
+	for r, pathA := range allpath {
 		var groups [][]string
 		group := pathA
 		groups = append(groups, group)
-
-		for _, pathB := range allpath {
-			if IsValidPath(pathB, groups) {
+		for j, pathB := range allpath {
+			if r != j && IsValidPath(pathB, groups) {
 				groups = append(groups, pathB)
 			}
 		}
 		allGroups = append(allGroups, Paths{Path: groups})
-
 	}
-
 	return allGroups
 }
 
-
 /* This function finds the perfect group to send the ants through */
-func ChooseAGroup(all []Paths,  NumberOfAnts int) [][]string{
+func ChooseAGroup(all []Paths, NumberOfAnts int) [][]string {
 	BestTurn := math.MaxInt64
 	BestGroup := map[int][][]string{}
-	for i := 0; i < len(all); i++{
+	for i := 0; i < len(all); i++ {
 		group := all[i].Path
 		GroupCapacity := PathsCapacity(group, NumberOfAnts)
 		BigTurn := 0
-		for j, x := range group{
-			s := len(x) + GroupCapacity[j]-1
-			if s > BigTurn{
+		for j, x := range group {
+			s := len(x) + GroupCapacity[j] - 1
+			if s > BigTurn {
 				BigTurn = s
 			}
 		}
 		BestGroup[BigTurn] = group
-		if BigTurn < BestTurn{
+		if BigTurn < BestTurn {
 			BestTurn = BigTurn
 		}
-	} 
+	}
 
 	return BestGroup[BestTurn]
 
 }
-
 
 func PathsCapacity(paths [][]string, NumberOfAnts int) []int {
 	paths_capacity := make([]int, len(paths))
@@ -84,15 +75,15 @@ func PathsCapacity(paths [][]string, NumberOfAnts int) []int {
 		return paths_capacity
 	}
 
+	//This loop is to choose the best path to add the new ant
 	for i := 0; NumberOfAnts > 0; i++ {
-		if i == len(paths)-1 {
-			i = 0
+		BestPathIndex := 0
+		for j := 0; j < len(paths); j++{
+			if len(paths[j]) + paths_capacity[j] < len(paths[BestPathIndex]) + paths_capacity[BestPathIndex] {
+				BestPathIndex = j
+			}
 		}
-		if len(paths[i])+paths_capacity[i] > len(paths[i+1])+paths_capacity[i+1] {
-			paths_capacity[i+1] += 1
-		} else {
-			paths_capacity[i] += 1
-		}
+		paths_capacity[BestPathIndex] += 1
 		NumberOfAnts--
 	}
 	return paths_capacity

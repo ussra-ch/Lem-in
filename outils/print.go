@@ -2,9 +2,7 @@ package lem
 
 import "fmt"
 
-func PrintAnts(antsOnPath [][]string, foundPaths [][]string) {
-	// fmt.Println(antsOnPath)
-	// fmt.Println(foundPaths)
+func Printing(antsOnPath [][]string, foundPaths [][]string) {
 	if len(foundPaths[0]) == 1 {
 		count := len(antsOnPath[0])
 		for i := 1; count > 0; i++ {

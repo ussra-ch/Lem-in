@@ -11,10 +11,8 @@ func main() {
 	if success == ""{
 		return
 	}
-	allgroup:=lem.PathsGrouping(colony)
-	// fmt.Println(allgroup)
+	allgroup:=lem.GroupingPaths(colony)
 	bestGroup:=lem.ChooseAGroup(allgroup, colony.NumAnts)
-	// fmt.Println(bestGroup)
 	capacities := lem.PathsCapacity(bestGroup, colony.NumAnts)
 	
 	count := 0
@@ -40,5 +38,5 @@ func main() {
 			}
 		}
 	}
-	lem.PrintAnts(result, bestGroup)
+	lem.Printing(result, bestGroup)
 }

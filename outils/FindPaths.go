@@ -8,15 +8,17 @@ import (
 
 /* This function returns all the possibele paths 
 from the start to the end */
-func Graph(colony *Colony) [][]string {
+func GetAllPathsSorted(colony *Colony) [][]string {
+	// Validate input: colony and its start/end must be non-nil
 	if colony == nil || colony.start == nil || colony.end == nil {
 		fmt.Println("Error: Invalid colony data.")
 		return [][]string{}
 	}
-	//makes start & end forbidden 
+	// "forbidden" rooms should not appear in the middle of any path
 	forbidden := []string{colony.start.name, colony.end.name}
 	allpath := [][]string{}
 
+	// Iterate over neighbors of the start room
 	for _, StartNeighbor := range colony.links[colony.start.name] {
 		if StartNeighbor == colony.start.name || StartNeighbor == colony.end.name {
 			if StartNeighbor == colony.end.name {
@@ -35,6 +37,7 @@ func Graph(colony *Colony) [][]string {
 			allpath = append(allpath, path)
 		}
 	}
+	// Sort all collected paths by increasing length (shortest first)
 	sort.Slice(allpath, func(i, j int) bool {
 		return len(allpath[i]) < len(allpath[j])
 	})
@@ -44,31 +47,38 @@ func Graph(colony *Colony) [][]string {
 
 
 /* This function traverses the graph using BFS algo */
-func bfs(start, end string, colony *Colony, forbidden []string) []string {
-	queue := [][]string{{start}}
+func bfs(startRoom, endRoom string, colony *Colony, forbidden []string) []string {
+	// Initialize the queue with a single-element path starting at startRoom
+	queue := [][]string{{startRoom}}
+	// Track visited rooms to avoid revisiting and infinite loops
 	visited := make(map[string]bool)
-	visited[start] = true
+	visited[startRoom] = true
 
 	for _, node := range forbidden {
 		visited[node] = true
 	}
 	for len(queue) > 0 {
+		// Dequeue the first path in the queue
 		path := queue[0]
 		queue = queue[1:]
 		lastNode := path[len(path)-1]
 
-		if lastNode == end {
+		// If we've reached the end room, return this path as the result
+		if lastNode == endRoom {
 			return path
 		}
 
+		// Otherwise, explore all unvisited neighbors of lastNode
 		for _, neighbor := range colony.links[lastNode] {
 			if !visited[neighbor] {
 				visited[neighbor] = true
+				// Create a new path by copying the current path and appending the neighbor
 				newPath := append([]string{}, path...)
 				newPath = append(newPath, neighbor)
 				queue = append(queue, newPath)
 			}
 		}
 	}
+	// If the queue is exhausted without finding endRoom, return empty slice (no path)
 	return []string{}
 }

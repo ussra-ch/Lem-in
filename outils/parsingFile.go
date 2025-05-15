@@ -30,13 +30,16 @@ func Parsing() (*Colony, string) {
 
 	AntIndex := 0
 	for i, x := range lines {
-		if x != "" && x[0] == '#' {
+		// fmt.Println(x)
+		x = strings.TrimSpace(x)
+		if (x != "" && x[0] == '#' ) || x == ""{
 			continue
 		} else {
 			AntIndex = i
 			break
 		}
 	}
+	// fmt.Println(AntIndex)
 
 	ant, err := strconv.Atoi(strings.TrimSpace(lines[AntIndex]))
 	if err != nil || ant <= 0 || ant > 10000000 {
@@ -44,32 +47,25 @@ func Parsing() (*Colony, string) {
 		return nil, ""
 	}
 	colony.NumAnts = ant
-	var end, start bool
-	linekes:=false
-	for r := 1; r < len(lines); r++ {
+	// end means the End Room 
+	//start means the Start Room
+	var end, start bool 
+	links := false
+
+	for r := AntIndex+1; r < len(lines); r++ {
 		line := strings.TrimSpace(lines[r])
-
-		if line == "" || line[0] == 'L' {
-			continue
-		}
-
-		if line[0] == '#' && line != "##start" && line != "##end" {
+		if line == "" || line[0] == 'L' || (line[0] == '#' && line != "##start" && line != "##end"){
 			continue
 		}
 
 		room := strings.Fields(line)
 		if len(room) == 3 {
-			if linekes {
+			if links {
 				fmt.Println("Error")
 				return nil,""
 			}
 			if start {
-
-				if len(room) != 3 {
-					fmt.Println("ERROR: invalid data format")
-					return nil, ""
-				}
-				if room[1] == "" || room[2] == "" {
+				if colony.start != nil{
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
 				}
@@ -91,12 +87,7 @@ func Parsing() (*Colony, string) {
 				start = false
 				continue
 			} else if end {
-				
-				if len(room) != 3 {
-					fmt.Println("ERROR: invalid data format")
-					return nil, ""
-				}
-				if room[1] == "" || room[2] == "" {
+				if colony.end != nil{
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
 				}
@@ -122,12 +113,6 @@ func Parsing() (*Colony, string) {
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
 				}
-
-				if room[1] == "" || room[2] == "" {
-					fmt.Println("ERROR: invalid data format")
-					return nil, ""
-				}
-
 				RoomX, err := strconv.Atoi(room[1])
 				if err != nil {
 					fmt.Println("ERROR: invalid data format")
@@ -144,7 +129,6 @@ func Parsing() (*Colony, string) {
 						return nil, ""
 					}
 				}
-
 				colony.rooms[room[0]] = &Room{
 					name: room[0],
 					x:    RoomX,
@@ -153,29 +137,19 @@ func Parsing() (*Colony, string) {
 				continue
 			}
 		} else if line == "##start" {
-			if r+1 >= len(lines) {
+			if start || end{
 				fmt.Println("ERROR: invalid data format")
-				return nil, ""
-			}
-			if start {
-				fmt.Println("Error")
 				return nil , ""
 			}
 			start = true
-
 		} else if line == "##end" {
-			if r+1 >= len(lines) {
+			if end || start{
 				fmt.Println("ERROR: invalid data format")
-				return nil, ""
-			}
-			if end {
-				fmt.Println("Error")
 				return nil , ""
 			}
 			end = true
-
 		} else {
-			linekes=true
+			links=true
 			link := strings.Split(line, "-")
 			if len(link) == 2 {
 				colony.links[link[0]] = append(colony.links[link[0]], link[1])
