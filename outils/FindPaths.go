@@ -5,9 +5,11 @@ import (
 	"sort"
 )
 
+/*
+	This function returns all the possibele paths
 
-/* This function returns all the possibele paths 
-from the start to the end */
+from the start to the end
+*/
 func GetAllPathsSorted(colony *Colony) [][]string {
 	// Validate input: colony and its start/end must be non-nil
 	if colony == nil || colony.start == nil || colony.end == nil {
@@ -31,6 +33,10 @@ func GetAllPathsSorted(colony *Colony) [][]string {
 			if EndNeighbor == colony.start.name || EndNeighbor == colony.end.name {
 				continue
 			}
+
+			if len(bfs(StartNeighbor, EndNeighbor, colony, forbidden)) == 0 {
+				continue
+			}
 			path := []string{colony.start.name}
 			path = append(path, bfs(StartNeighbor, EndNeighbor, colony, forbidden)...)
 			path = append(path, colony.end.name)
@@ -44,7 +50,6 @@ func GetAllPathsSorted(colony *Colony) [][]string {
 
 	return allpath
 }
-
 
 /* This function traverses the graph using BFS algo */
 func bfs(startRoom, endRoom string, colony *Colony, forbidden []string) []string {

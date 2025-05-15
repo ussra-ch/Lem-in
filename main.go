@@ -8,10 +8,14 @@ import (
 
 func main() {
 	colony, success := lem.Parsing()
-	if success == ""{
+	if success != ""{
+		fmt.Println(success)
+		fmt.Println("")
+	}else{
 		return
 	}
 	allgroup:=lem.GroupingPaths(colony)
+
 	bestGroup:=lem.ChooseAGroup(allgroup, colony.NumAnts)
 	capacities := lem.PathsCapacity(bestGroup, colony.NumAnts)
 	
