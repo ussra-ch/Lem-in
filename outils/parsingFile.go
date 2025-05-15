@@ -32,7 +32,7 @@ func Parsing() (*Colony, string) {
 	for i, x := range lines {
 		// fmt.Println(x)
 		x = strings.TrimSpace(x)
-		if (x != "" && x[0] == '#' ) || x == ""{
+		if (x != "" && x[0] == '#') || x == "" {
 			continue
 		} else {
 			AntIndex = i
@@ -47,14 +47,14 @@ func Parsing() (*Colony, string) {
 		return nil, ""
 	}
 	colony.NumAnts = ant
-	// end means the End Room 
-	//start means the Start Room
-	var end, start bool 
+	// end means the End Room
+	// start means the Start Room
+	var end, start bool
 	links := false
 
-	for r := AntIndex+1; r < len(lines); r++ {
+	for r := AntIndex + 1; r < len(lines); r++ {
 		line := strings.TrimSpace(lines[r])
-		if line == "" || line[0] == 'L' || (line[0] == '#' && line != "##start" && line != "##end"){
+		if line == "" || line[0] == 'L' || (line[0] == '#' && line != "##start" && line != "##end") {
 			continue
 		}
 
@@ -62,10 +62,10 @@ func Parsing() (*Colony, string) {
 		if len(room) == 3 {
 			if links {
 				fmt.Println("Error")
-				return nil,""
+				return nil, ""
 			}
 			if start {
-				if colony.start != nil{
+				if colony.start != nil {
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
 				}
@@ -87,7 +87,7 @@ func Parsing() (*Colony, string) {
 				start = false
 				continue
 			} else if end {
-				if colony.end != nil{
+				if colony.end != nil {
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
 				}
@@ -106,7 +106,7 @@ func Parsing() (*Colony, string) {
 					x:    RoomX,
 					y:    RoomY,
 				}
-				end=false
+				end = false
 				continue
 			} else {
 				if _, exists := colony.rooms[room[0]]; exists {
@@ -137,23 +137,35 @@ func Parsing() (*Colony, string) {
 				continue
 			}
 		} else if line == "##start" {
-			if start || end{
+			if start || end {
 				fmt.Println("ERROR: invalid data format")
-				return nil , ""
+				return nil, ""
 			}
 			start = true
 		} else if line == "##end" {
-			if end || start{
+			if end || start {
 				fmt.Println("ERROR: invalid data format")
-				return nil , ""
+				return nil, ""
 			}
 			end = true
 		} else {
-			links=true
+			links = true
 			link := strings.Split(line, "-")
-			if len(link) == 2 {
-				colony.links[link[0]] = append(colony.links[link[0]], link[1])
-				colony.links[link[1]] = append(colony.links[link[1]], link[0])
+			if len(link) == 2 && link[0] != "" && link[1] != "" {
+				g := true
+				for _, existingRoom := range colony.rooms {
+					if link[0] == existingRoom.name || link[1] == existingRoom.name {
+						colony.links[link[0]] = append(colony.links[link[0]], link[1])
+						colony.links[link[1]] = append(colony.links[link[1]], link[0])
+						g = false
+						break
+					}
+				}
+				if g {
+					fmt.Println("ERROR: invalid data format")
+					return nil, ""
+				}
+
 			} else {
 				fmt.Println("ERROR: invalid data format")
 				return nil, ""
