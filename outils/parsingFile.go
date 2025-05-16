@@ -58,14 +58,14 @@ func Parsing() (*Colony, string) {
 			continue
 		}
 		if line[0] == 'L' {
-			fmt.Println("Error")
+			fmt.Println("ERROR: invalid data format")
 			return nil, ""
 		}
 
 		room := strings.Fields(line)
 		if len(room) == 3 {
 			if links {
-				fmt.Println("Error")
+				fmt.Println("ERROR: invalid data format")
 				return nil, ""
 			}
 			if start {
@@ -172,20 +172,18 @@ func Parsing() (*Colony, string) {
 			links = true
 			link := strings.Split(line, "-")
 			if len(link) == 2 && link[0] != "" && link[1] != "" {
-				g := true
-				for _, existingRoom := range colony.rooms {
-					if link[0] == existingRoom.name || link[1] == existingRoom.name {
-						colony.links[link[0]] = append(colony.links[link[0]], link[1])
-						colony.links[link[1]] = append(colony.links[link[1]], link[0])
-						g = false
-						break
-					}
-				}
-
-				if g {
+				if link[0] == link[1]{
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
 				}
+				ok1 := IsValidRoom(link[0], colony)
+				ok2 := IsValidRoom(link[1], colony)
+				if !ok1 || !ok2{
+					fmt.Println("ERROR: invalid data format")
+					return nil, ""
+				}
+				colony.links[link[0]] = append(colony.links[link[0]], link[1])
+				colony.links[link[1]] = append(colony.links[link[1]], link[0])
 
 			} else {
 				fmt.Println("ERROR: invalid data format")
@@ -203,6 +201,25 @@ func Parsing() (*Colony, string) {
 		fmt.Println("ERROR: invalid data format")
 		return nil, ""
 	}
+	if colony.start.x == colony.end.x && colony.start.y == colony.end.y{
+		fmt.Println("ERROR: invalid data format")
+		return nil, ""
+	}
 
 	return colony, string(file)
+}
+
+
+
+func IsValidRoom( name string, colony *Colony) bool {
+	if _, ok := colony.rooms[name]; ok {
+		return true
+	}
+	if colony.start != nil && name == colony.start.name {
+		return true
+	}
+	if colony.end != nil && name == colony.end.name {
+		return true
+	}
+	return false
 }
