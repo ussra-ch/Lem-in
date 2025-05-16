@@ -54,8 +54,12 @@ func Parsing() (*Colony, string) {
 
 	for r := AntIndex + 1; r < len(lines); r++ {
 		line := strings.TrimSpace(lines[r])
-		if line == "" || line[0] == 'L' || (line[0] == '#' && line != "##start" && line != "##end") {
+		if line == "" || (line[0] == '#' && line != "##start" && line != "##end") {
 			continue
+		}
+		if line[0] == 'L' {
+			fmt.Println("Error")
+			return nil, ""
 		}
 
 		room := strings.Fields(line)
@@ -76,6 +80,10 @@ func Parsing() (*Colony, string) {
 				}
 				RoomY, err := strconv.Atoi(room[2])
 				if err != nil {
+					fmt.Println("ERROR: invalid data format")
+					return nil, ""
+				}
+				if _, exists := colony.rooms[room[0]]; exists {
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
 				}
@@ -101,6 +109,10 @@ func Parsing() (*Colony, string) {
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
 				}
+				if _, exists := colony.rooms[room[0]]; exists {
+					fmt.Println("ERROR: invalid data format")
+					return nil, ""
+				}
 				colony.end = &Room{
 					name: room[0],
 					x:    RoomX,
@@ -110,6 +122,10 @@ func Parsing() (*Colony, string) {
 				continue
 			} else {
 				if _, exists := colony.rooms[room[0]]; exists {
+					fmt.Println("ERROR: invalid data format")
+					return nil, ""
+				}
+				if (colony.start != nil && room[0] == colony.start.name) || (colony.end != nil && room[0] == colony.end.name) {
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
 				}
@@ -128,6 +144,10 @@ func Parsing() (*Colony, string) {
 						fmt.Println("ERROR: invalid data format")
 						return nil, ""
 					}
+				}
+				if (colony.start != nil && RoomX == colony.start.x && RoomY == colony.start.y) || (colony.end != nil && RoomX == colony.end.x && RoomY == colony.end.y) {
+					fmt.Println("ERROR: invalid data format")
+					return nil, ""
 				}
 				colony.rooms[room[0]] = &Room{
 					name: room[0],
@@ -161,6 +181,7 @@ func Parsing() (*Colony, string) {
 						break
 					}
 				}
+
 				if g {
 					fmt.Println("ERROR: invalid data format")
 					return nil, ""
