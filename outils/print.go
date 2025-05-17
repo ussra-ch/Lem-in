@@ -16,7 +16,7 @@ func Printing(antsOnPath [][]string, foundPaths [][]string) {
 			if resIndex == 0 {
 				continue
 			}
-			if TheAnt == len(antsOnPath[PathIndex]) {
+			if TheAnt >= len(antsOnPath[PathIndex]) {
 				break
 			}
 			if (resIndex-1)+stack >= len(res) {
