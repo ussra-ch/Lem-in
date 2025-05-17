@@ -3,15 +3,6 @@ package lem
 import "fmt"
 
 func Printing(antsOnPath [][]string, foundPaths [][]string) {
-	if len(foundPaths[0]) == 1 {
-		count := len(antsOnPath[0])
-		for i := 1; count > 0; i++ {
-			fmt.Printf("L%d-%s ", i, foundPaths[0][0])
-			count--
-		}
-		fmt.Println()
-		return
-	}
 	maxLen := len(antsOnPath[0])
 	for _, v := range antsOnPath {
 		if len(v) > maxLen {
@@ -21,10 +12,11 @@ func Printing(antsOnPath [][]string, foundPaths [][]string) {
 	res := make([][]string, 1)
 	for PathIndex, TheAnt, stack := 0, 0, 0; PathIndex < len(antsOnPath); PathIndex++ {
 		for resIndex, room := range foundPaths[PathIndex] {
+			//check if i'm in the start room, if yes i skip it
 			if resIndex == 0 {
 				continue
 			}
-			if TheAnt >= len(antsOnPath[PathIndex]) {
+			if TheAnt == len(antsOnPath[PathIndex]) {
 				break
 			}
 			if (resIndex-1)+stack >= len(res) {
@@ -49,6 +41,19 @@ func Printing(antsOnPath [][]string, foundPaths [][]string) {
 	}
 }
 
-func Print(capacities []int, bestGroup [][]string){
-	
+func AntsName(colony *Colony, capacities []int)[][]string{
+	result := make([][]string, len(capacities))
+	totalAnts := colony.NumAnts
+	antNumber := 1
+	assigned := make([]int, len(capacities))
+	for antNumber <= totalAnts {
+		for i := 0; i < len(capacities); i++ {
+			if assigned[i] < capacities[i] {
+				result[i] = append(result[i], fmt.Sprintf("L%d", antNumber))
+				assigned[i]++
+				antNumber++
+			}
+		}
+	}
+	return result
 }

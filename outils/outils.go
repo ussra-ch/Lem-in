@@ -6,7 +6,6 @@ import (
 
 /* This function checks the presence of a slice in a matrix */
 func IsValidPath(b []string, groups [][]string) bool {
-	//3lach kan7tajo hadi
 	set := make(map[string]bool)
 	for _, a := range groups {
 		for r, val := range a {

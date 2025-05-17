@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-
 	"lem/outils"
 )
 
@@ -22,27 +21,14 @@ func main() {
 		}
 	}
 	if count == len(capacities) {
-		fmt.Println("Invalid input")
+		fmt.Println("ERROR: invalid data format")
 		return
 	}
-	result := make([][]string, len(capacities))
-	totalAnts := colony.NumAnts
-	antNumber := 1
-	assigned := make([]int, len(capacities))
-	for antNumber <= totalAnts {
-		for i := 0; i < len(capacities); i++ {
-			if assigned[i] < capacities[i] {
-				result[i] = append(result[i], fmt.Sprintf("L%d", antNumber))
-				assigned[i]++
-				antNumber++
-			}
-		}
-	}
-
+	result := lem.AntsName(colony, capacities)
 
 	if success != ""{
-		// fmt.Println(success)
-		// fmt.Println("")
+		fmt.Println(success)
+		fmt.Println("")
 	}else{
 		return 
 	}
