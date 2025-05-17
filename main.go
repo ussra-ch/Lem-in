@@ -29,8 +29,6 @@ func main() {
 	if success != ""{
 		fmt.Println(success)
 		fmt.Println("")
-	}else{
-		return 
 	}
 
 	lem.Printing(result, bestGroup)
