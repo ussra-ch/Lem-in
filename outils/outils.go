@@ -76,7 +76,7 @@ func PathsCapacity(paths [][]string, NumberOfAnts int) []int {
 	}
 
 	//This loop is to choose the best path to add the new ant
-	for i := 0; NumberOfAnts > 0; i++ {
+	for NumberOfAnts > 0 {
 		BestPathIndex := 0
 		for j := 0; j < len(paths); j++{
 			if len(paths[j]) + paths_capacity[j] < len(paths[BestPathIndex]) + paths_capacity[BestPathIndex] {

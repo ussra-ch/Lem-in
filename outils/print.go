@@ -19,25 +19,25 @@ func Printing(antsOnPath [][]string, foundPaths [][]string) {
 		}
 	}
 	res := make([][]string, 1)
-	for index, element, stack := 0, 0, 0; index < len(antsOnPath); index++ {
-		for resIndex, room := range foundPaths[index] {
+	for PathIndex, TheAnt, stack := 0, 0, 0; PathIndex < len(antsOnPath); PathIndex++ {
+		for resIndex, room := range foundPaths[PathIndex] {
 			if resIndex == 0 {
 				continue
 			}
-			if element >= len(antsOnPath[index]) {
+			if TheAnt >= len(antsOnPath[PathIndex]) {
 				break
 			}
 			if (resIndex-1)+stack >= len(res) {
 				res = append(res, []string{})
 			}
-			res[(resIndex-1)+stack] = append(res[(resIndex-1)+stack], antsOnPath[index][element]+"-"+room)
+			res[(resIndex-1)+stack] = append(res[(resIndex-1)+stack], antsOnPath[PathIndex][TheAnt]+"-"+room)
 		}
-		if index+1 >= len(antsOnPath) {
-			index = -1
-			element++
+		if PathIndex+1 >= len(antsOnPath) {
+			PathIndex = -1
+			TheAnt++
 			stack++
 		}
-		if element >= maxLen {
+		if TheAnt >= maxLen {
 			break
 		}
 	}
@@ -47,4 +47,8 @@ func Printing(antsOnPath [][]string, foundPaths [][]string) {
 		}
 		fmt.Println()
 	}
+}
+
+func Print(capacities []int, bestGroup [][]string){
+	
 }

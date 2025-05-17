@@ -61,7 +61,7 @@ func FindAntLine(lines []string) int {
 
 func ParseAntCount(colony *Colony, line string) bool {
 	ant, err := strconv.Atoi(strings.TrimSpace(line))
-	if err != nil || ant <= 0 || ant > 10000000 {
+	if err != nil || ant <= 0{
 		fmt.Println("ERROR: invalid data format")
 		return false
 	}
@@ -131,6 +131,7 @@ func ParseLines(colony *Colony, lines []string, AntIndex int) bool{
 					y:    RoomY,
 				}
 				end = false
+
 				continue
 			} else {
 				if _, exists := colony.rooms[room[0]]; exists {
@@ -205,7 +206,6 @@ func ValidateColony(colony *Colony) bool {
 		fmt.Println("ERROR: invalid data format")
 		return false
 	}
-
 	return true
 }
 
@@ -227,7 +227,6 @@ func RoomCoordinatesAndCheck(colony *Colony, room []string) (int, int, bool) {
 	}
 	return x, y, true
 }
-
 
 func ErrorInvalidFormat() bool {
 	fmt.Println("ERROR: invalid data format")
